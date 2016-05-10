@@ -1,0 +1,38 @@
+<template name="Recipe_form">
+  <!-- {{#autoForm collection=recipes id="recipeForm" type=type doc=doc template="bootstrap3-horizontal" afFieldInput-placeholder="schemaLabel"}} -->
+	{{#autoForm collection=recipes id="recipeForm" type="method" meteormethod="recipes.insert" doc=doc template="bootstrap3-horizontal" afFieldInput-placeholder="schemaLabel"}}
+			<fieldset>
+				<!-- {{> afQuickField name='owner' value=this.owner type='hidden'}} -->
+				{{> afQuickField name='name'}}
+				{{> afQuickField name='description'}}
+				{{> afQuickField name='source'}}
+				{{> afQuickField name='servings'}}
+				{{> afQuickField name='prep_time'}}
+				{{> afQuickField name='cook_time'}}
+				{{> afQuickField name='ingredients' type="textarea" rows=6 id="ingredientsTextArea"}}
+				<!-- <ul class="list-group">
+				{{#afEachArrayItem name='ingredients2'}}
+					<li class="list-group-item autoform-array-item">
+						<div class="autoform-remove-item-wrap">
+							<button type="button" class="btn btn-primary autoform-remove-item"><span class="glyphicon glyphicon-minus"></span></button>
+						</div>
+						<div class="autoform-array-item-body">
+							{{> afFieldInput name=this.current.amount}}
+							{{> afFieldInput name=this.current.type}}
+						</div>
+					</li>
+				{{/afEachArrayItem}}
+				<li class="list-group-item">
+					<button type="button" class="btn btn-primary autoform-add-item" data-autoform-field="ingredients2"><span class="glyphicon glyphicon-plus"></span></button>
+				</li>
+				</ul> -->
+				{{> afQuickField name='directions' type="textarea" rows=6}}
+				<!-- {{> afQuickField name='ingredients2'}} -->
+			</fieldset>
+			<div class="btn-group">
+				<button type="submit" class="btn btn-primary">Submit</button>
+				<button type="reset" class="btn btn-primary">Reset</button>
+				<button type="button" class="btn btn-primary js-edit-item-cancel" id="cancel">Cancel</button>
+			</div>
+		{{/autoForm}}
+</template>

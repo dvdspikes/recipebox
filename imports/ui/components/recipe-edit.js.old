@@ -1,0 +1,59 @@
+import './recipe-edit.html';
+
+Template.Recipe_edit.onCreated(function recipeEditOnCreated() {
+	this.autorun(() => {
+		new SimpleSchema({
+			recipe: { type: Function },
+			editing: { type: Boolean },
+			onEditingChange: { type: Function },
+		}).validate(Template.currentData());
+	});
+	const instance = this;
+	AutoForm.hooks({
+		updateRecipeForm: {
+			formToDoc: function(recipe) {
+				if (typeof recipe.ingredients === "string") {
+					recipe.ingredients = recipe.ingredients.split("\n");
+				}
+				if (typeof recipe.directions === "string") {
+					recipe.directions = recipe.directions.split("\n");	
+				}
+				return recipe;
+			},
+			docToForm: function(recipe) {
+				if (_.isArray(recipe.ingredients)) {
+					recipe.ingredients = recipe.ingredients.join("\n");
+				}
+				if (_.isArray(recipe.directions)) {
+					recipe.directions = recipe.directions.join("\n");
+				}
+				return recipe;
+			},
+			onSuccess: function(formType, result) {
+				console.log("onSuccess: " + formType);
+				instance.data.onEditingChange(false);
+			},
+		}
+	});
+});
+
+Template.Recipe_edit.helpers({
+	type() {
+		return "type";
+	},
+});
+
+Template.Recipe_show.events({
+	'mousedown .js-edit-item'() {
+		this.onEditingChange(true);
+	},
+	'mousedown .js-edit-item-cancel'() {
+		this.onEditingChange(false);
+	},
+	'mousedown .js-save-item'() {
+		this.onEditingChange(false);
+	},
+	// 'submit form'(event, template) {
+	// 	template.data.onEditingChange(false);
+	// },
+});

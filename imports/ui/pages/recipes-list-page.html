@@ -1,0 +1,17 @@
+<template name="Recipes_list_page">
+	<h1>Recipes</h1>
+	{{#if Template.subscriptionsReady}}
+		<a href="{{pathFor 'Recipes.new'}}" title="Add new recipe"><span class="glyphicon glyphicon-plus"></span> Add a new recipe</a>
+		{{#if recipes.count}}
+			<ul class="list-unstyled list-recipes">
+				{{#each recipe in recipes}}
+					<li><a href="{{pathFor 'Recipes.show' _id=recipe._id.toHexString}}" title="{{recipe.name}}">{{recipe.name}}</a></li>
+				{{/each}}
+			</ul>
+		{{else}}
+			<p>No recipes</p>
+		{{/if}}
+	{{else}}
+		{{> App_loading}}
+	{{/if}}
+</template>

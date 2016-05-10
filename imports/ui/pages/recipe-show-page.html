@@ -1,0 +1,5 @@
+<template name="Recipe_show_page">
+	{{#each recipeId in recipeIdArray}}
+		{{> Recipe_show (recipeArgs recipeId)}}
+	{{/each}}
+</template>
