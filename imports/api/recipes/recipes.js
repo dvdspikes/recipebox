@@ -1,19 +1,10 @@
 import { Mongo } from 'meteor/mongo';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-const Recipes = new Mongo.Collection('recipes', {idGeneration: 'MONGO'});
+// export const Recipes = new Mongo.Collection('recipes', {idGeneration: 'MONGO'});
+export const Recipes = new Mongo.Collection('recipes');
 
-// IngredientSchema = new SimpleSchema({
-// 	type: {
-// 		type: String,
-// 		label: "Ingredient",
-// 	},
-// 	amount: {
-// 		type: String,
-// 		label: "Amount",
-// 	},
-// });
-RecipeSchema = new SimpleSchema({
+Recipes.schema = new SimpleSchema({
 	name: {
 		type: String,
 		label: "Name",
@@ -49,26 +40,30 @@ RecipeSchema = new SimpleSchema({
 		label: "Ingredients",
 		minCount: 1,
 	},
-	// ingredients2: {
-	// 	type: [IngredientSchema],
-	// 	label: "Ingredients",
-	// 	optional: true,
-	// },
 	directions: {
 		type: [String],
 		label: "Directions",
 		minCount: 1,
 	},
-	// owner: {
-	// 	type: String,
-	// 	label: "Owner",
-	// 	autoValue:function(){ return this.userId },
-	// },
-	// username: {
-	// 	type: String,
-	// 	label: "Username",
-	// },
+	createdBy: {
+		type: String,
+		optional: true,
+	},
+	createdAt: {
+		type: Date,
+		optional: true,
+	},
 });
-Recipes.attachSchema(RecipeSchema);
+Recipes.attachSchema(Recipes.schema);
 
-export { Recipes };
+// Recipes.helpers({
+// 	isEditableBy(userId) {
+// 		if (!this.createdBy) {
+//       return true;
+//     }
+
+//     return this.createdBy === userId;
+// 	}
+// });
+
+// export { Recipes, RecipeSchema };

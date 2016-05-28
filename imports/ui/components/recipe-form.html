@@ -1,6 +1,6 @@
 <template name="Recipe_form">
   <!-- {{#autoForm collection=recipes id="recipeForm" type=type doc=doc template="bootstrap3-horizontal" afFieldInput-placeholder="schemaLabel"}} -->
-	{{#autoForm collection=recipes id="recipeForm" type="method" meteormethod="recipes.insert" doc=doc template="bootstrap3-horizontal" afFieldInput-placeholder="schemaLabel"}}
+	{{#autoForm collection=recipes id="recipeForm" doc=doc template="bootstrap3-horizontal" afFieldInput-placeholder="schemaLabel"}}
 			<fieldset>
 				<!-- {{> afQuickField name='owner' value=this.owner type='hidden'}} -->
 				{{> afQuickField name='name'}}

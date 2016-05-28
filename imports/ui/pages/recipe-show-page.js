@@ -10,7 +10,8 @@ import './recipe-show-page.html';
 Template.Recipe_show_page.onCreated(function recipeShowPageOnCreated() {
 	this.subscribe('recipes.one', FlowRouter.getParam('_id'));
 	
-	this.getRecipeId = () => new Meteor.Collection.ObjectID(FlowRouter.getParam('_id'));
+	// this.getRecipeId = () => new Meteor.Collection.ObjectID(FlowRouter.getParam('_id'));
+	this.getRecipeId = () => FlowRouter.getParam('_id');
 	this.getRecipe = () => Recipes.findOne(getrecipeId());
 
 	this.state = new ReactiveDict();

@@ -42,7 +42,30 @@ Meteor.startup(() => {
   				"Combine all ingredients in a bowl.",
   				"Add 1lb skirt steak strips and let marinate for at least an hour in the refrigerator.",
   			],
-  		}
+  		},
+      {
+        name: "Prosciutto Fig Pizza",
+        description: "Prosciutto Fig Pizza",
+        servings: 4,
+        prep_time: "0:15",
+        cook_time: "0:10",
+        ingredients: [
+          "Prosciutto",
+          "Figs",
+          "Mozzarella cheese",
+          "Tomato sauce",
+          "Thin rolled pizza crust",
+        ],
+        directions: [
+          "Preheat oven to 425 F",
+          "Spread tomato sauce on the pizza crust",
+          "Place a thin layer of mozzarella cheese over the tomato sauce",
+          "Remove excess fat from the prosciutto and place in even amount onto the pizza",
+          "Slice figs into thin pieces and place sparingly onto the pizza",
+          "Add more mozzarella cheese over the toppings, about double as in the second step",
+          "Bake at 425 F for 10 minutes",
+        ],
+      }
   	];
   	data.forEach((recipe) => {
   		const recipeId = Recipes.insert(recipe);

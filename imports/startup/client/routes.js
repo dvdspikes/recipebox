@@ -7,7 +7,7 @@ import '/imports/ui/pages/app-home.js';
 import '/imports/ui/pages/recipes-list-page.js';
 import '/imports/ui/pages/recipe-show-page.js';
 import '../../ui/pages/recipe-create-page.js';
-import '../../ui/pages/shopping-list.js';
+import '../../ui/pages/shopping-list-page.js';
 
 FlowRouter.route('/', {
 	name: 'App.home',
@@ -40,10 +40,9 @@ FlowRouter.route('/recipes/:_id', {
 	},
 });
 
-FlowRouter.route('/list', {
+FlowRouter.route('/shoppinglist', {
 	name: 'shopping_list',
 	action() {
-		console.log("route: shopping_list");
-		BlazeLayout.render('App_body', {main: 'shopping_list'});
+		BlazeLayout.render('App_body', {main: 'shopping_list_page'});
 	},
 });

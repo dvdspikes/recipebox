@@ -1,52 +1,49 @@
 import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
-import { SimpleSchema } from 'meteor/aldeed:simple-schema';
-
 import { Recipes } from './recipes.js';
 
 export const insert = new ValidatedMethod({
 	name: 'recipes.insert',
-	validate: Recipes.simpleSchema().validator(),
-	run({doc}) {
-		// console.group('recipes.insert');
-		console.log("In recipes.insert");
-		console.log('recipe: %j', doc);
-		console.log('this: %j', this);
-		if (!Meteor.userId()) {
+	validate: new SimpleSchema({
+		recipe: {type: Recipes.schema},
+	}).validator(),
+	run({recipe}) {
+		if (!this.userId) {
 			throw new Meteor.Error('not-authorized');
 		}
-		doc.owner = Meteor.userId();
-		// console.groupEnd();
-		return Recipes.insert(doc);
+		recipe.createdBy = this.userId;
+		recipe.createdat = new Date();
+		return Recipes.insert(recipe);
 	},
 });
 
 export const update = new ValidatedMethod({
 	name: 'recipes.update',
-	validate: Recipes.simpleSchema().validator(),
-	run({modifier, recipeId}) {
+	validate: new SimpleSchema({
+		recipe: {type: Recipes.schema},
+	}).validator(),
+	run({recipe}) {
 		if (!this.userId) {
 			throw new Meteor.Error('not-authorized');
 		}
-		const oldRecipe = Recipes.findOne(recipeId);
-		if (this.userId() !== oldRecipe.owner) {
+		let old = Recipes.findOne({_id: recipe._id, createdBy: this.userId});
+		if (!old) {
 			throw new Meteor.Error('not-authorized');
 		}
-		return Recipes.update(recipeId, modifer);
-	}
+		Recipes.update(recipe);
+	},
 });
 
 export const remove = new ValidatedMethod({
 	name: 'recipes.remove',
-	validate: Recipes.simpleSchema().validator(),
-	run({_id}) {
-		if (!this.userId) {
+	validate: new SimpleSchema({
+		recipeId: { type: String },
+	}).validator(),
+	run({ recipeId }) {
+		const recipe = Recipes.findOne(recipeId);
+
+		if (!this.userId || this.userId != recipe.createdBy) {
 			throw new Meteor.Error('not-authorized');
 		}
-		const oldRecipe = Recipes.findOne(_id);
-		if (this.userId() !== oldRecipe.owner) {
-			throw new Meteor.Error('not-authorized');
-		}
-		return Recipes.remove(_id);
-	}
+	},
 });

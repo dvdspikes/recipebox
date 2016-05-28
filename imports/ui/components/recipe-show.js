@@ -19,6 +19,7 @@ Template.Recipe_show.onCreated(function recipeShowOnCreated() {
 
 Template.Recipe_show.events({
 	'click #edit'(e, t) {
+		console.log('click .js-edit-item');
 		t.data.onEditingChange(true);
 	},
 	'click #delete'(e, t) {
@@ -38,7 +39,7 @@ Template.Recipe_show.helpers({
 		return {
 			type: 'update',
 			doc: instance.data.recipe,
-			onSuccess: (result) => {
+			onSuccess: () => {
 				instance.data.onEditingChange(false);
 			},
 			cancel: () => {

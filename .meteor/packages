@@ -27,3 +27,4 @@ twbs:bootstrap
 accounts-ui
 accounts-password
 mdg:validated-method
+sacha:spin

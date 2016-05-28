@@ -4,66 +4,59 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { Recipes } from '../../api/recipes/recipes.js'
 
 import './recipe-form.html';
+if (Meteor.isClient)
+    AutoForm.debug();
 
 Template.Recipe_form.onCreated(function recipeFormOnCreated() {
 	const self = this;
 	self.autorun(() => {
 		new SimpleSchema({
 			type: { type: String },
-			meteormethod: { type: String },
 			doc: { type: Function },
 			onSubmit: { type: Function },
 			onSuccess: { type: Function },
 			cancel: { type: Function },
 		}).validate(Template.currentData());
 	});
-	console.log('here: %j', this.data.doc());
+});
+
+Template.Recipe_form.onRendered(function recipeFormOnRendered() {
+	const self = this;
 	AutoForm.addHooks('recipeForm',
 		{
 			formToDoc: function(recipe) {
-				console.group('formToDoc');
-				console.log('recipe: %j', recipe);
-				// console.log('owner: %j', recipe.owner);
 				if (typeof recipe.ingredients === "string") {
 					recipe.ingredients = recipe.ingredients.split("\n");
 				}
 				if (typeof recipe.directions === "string") {
 					recipe.directions = recipe.directions.split("\n");	
 				}
-				// if (!Meteor.userId) {
-				// 	throw new Meteor.Error('not-authorized');
-				// }
-				// recipe.owner = Meteor.userId();
-				console.groupEnd();
 				return recipe;
 			},
 			docToForm: function(recipe) {
-				console.group('docToForm');
-				console.log('recipe: %j', recipe);
-				// console.log('owner: %j', recipe.owner);
 				if (_.isArray(recipe.ingredients)) {
 					recipe.ingredients = recipe.ingredients.join("\n");
 				}
 				if (_.isArray(recipe.directions)) {
 					recipe.directions = recipe.directions.join("\n");
 				}
-				console.groupEnd();
 				return recipe;
 			},
-			beginSubmit: function() {
-				console.group('beginSubmit');
-				console.log('recipe: %j', this.insertDoc);
-				console.groupEnd();
+			onSubmit: function(insertDoc, updateDoc, currentDoc) {
+				let res = self.data.onSubmit(insertDoc, updateDoc, currentDoc);
+				this.done(null, res);
+				return false;
 			},
-			onSuccess: function(result) {
-				self.data.onSuccess(result);
+			onSuccess: function(formType, result) {
+				self.data.onSuccess(formType, result);
 			},
+			onError: function(formType, error) {},
 		},
 		true);
 });
 
 Template.Recipe_form.events({
-	'mousedown #cancel'(e, t) {
+	'click .js-edit-item-cancel'(e, t) {
 		// console.group("Recipe_form mousedown .js-edit-item-cancel");
 		// console.log("event: %j", e);
 		// console.log("template: %j", t);
@@ -71,6 +64,10 @@ Template.Recipe_form.events({
 		AutoForm.resetForm('recipeForm');
 		Template.instance().data.cancel();
 	},
+	// 'submit #recipeForm'(e, t) {
+	// 	// console.log('submit #recipeForm');
+	// 	// e.preventDefault();
+	// },
 });
 
 Template.Recipe_form.helpers({

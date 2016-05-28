@@ -3,7 +3,8 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { FlowRouter } from 'meteor/kadira:flow-router';
 import { ReactiveDict } from 'meteor/reactive-dict';
 
-import { Recipes } from '../../api/recipes/recipes.js'
+import { Recipes } from '../../api/recipes/recipes.js';
+import { insert } from '../../api/recipes/methods.js';
 
 import '../components/recipe-form.js';
 import './recipe-create-page.html';
@@ -25,10 +26,6 @@ Template.Recipe_create_page.onCreated(function recipeCreatePageOnCreated() {
 // 	},
 // });
 
-Template.Recipe_create_page.events({
-	// 'click '
-});
-
 Template.Recipe_create_page.helpers({
 	Recipes() {
 		return Recipes;
@@ -36,20 +33,20 @@ Template.Recipe_create_page.helpers({
 	formArgs() {
 		const instance = Template.instance();
 		return {
-			type: 'method',
-			meteormethod: 'recipes.insert',
-			doc: () => {
-				// return {owner:Meteor.userId(),};
-				return {};
+			type: 'normal',
+			doc: () => {},
+			onSubmit: function(insertDoc, updateDoc, currentDoc) {
+				let res = insert.call({recipe: insertDoc});
+				// console.log('res: %j', res);
+				return res;
 			},
-			onSubmit: (insertDoc, updateDoc, currentDoc) => {
-
-			},
-			onSuccess: (result) => {
-				FlowRouter.go('Recipes.show', {_id: result._str});
+			onSuccess: function(formType, result)  {
 				// instance.onEditingChange(false);
+				// console.log('formType: %j', formType);
+				// console.log('result: %j', result);
+				FlowRouter.go('Recipes.show', {_id:result});
 			},
-			cancel: () => {
+			cancel: function() {
 				FlowRouter.go('Recipes.list');
 				// instance.onEditingChange(false);
 			},
