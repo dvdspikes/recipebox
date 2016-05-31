@@ -2,4 +2,8 @@
 recipebox is a recipe organizer, meal planner, pantry tracker, and shopping list.
 
 ## Getting Started
-After installing Meteor, clone this repository, navigate to your clone's base directory, and just run the command 'meteor'.
+1. Install Meteor
+2. cd projects-directory
+3. git clone https://github.com/dvdspikes/recipebox.git
+4. cd recipebox
+5. meteor
