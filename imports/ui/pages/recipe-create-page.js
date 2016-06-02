@@ -34,21 +34,15 @@ Template.Recipe_create_page.helpers({
 		const instance = Template.instance();
 		return {
 			type: 'normal',
-			doc: () => {},
+			doc: () => null,
 			onSubmit: function(insertDoc, updateDoc, currentDoc) {
-				let res = insert.call({recipe: insertDoc});
-				// console.log('res: %j', res);
-				return res;
+				return insert.call({recipe: insertDoc});
 			},
 			onSuccess: function(formType, result)  {
-				// instance.onEditingChange(false);
-				// console.log('formType: %j', formType);
-				// console.log('result: %j', result);
 				FlowRouter.go('Recipes.show', {_id:result});
 			},
 			cancel: function() {
 				FlowRouter.go('Recipes.list');
-				// instance.onEditingChange(false);
 			},
 		};
 	},

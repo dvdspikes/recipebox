@@ -5,6 +5,10 @@ import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 export const Recipes = new Mongo.Collection('recipes');
 
 Recipes.schema = new SimpleSchema({
+	// _id: {
+	// 	type: String,
+	// 	optional: true,
+	// },
 	name: {
 		type: String,
 		label: "Name",
@@ -48,10 +52,28 @@ Recipes.schema = new SimpleSchema({
 	createdBy: {
 		type: String,
 		optional: true,
+		// autoValue: function() {
+  //     if (this.isInsert) {
+  //       return this.userId;
+  //     } else if (this.isUpsert) {
+  //       return {$setOnInsert: this.userId};
+  //     } else {
+  //       this.unset();  // Prevent user from supplying their own value
+  //     }
+  //   }
 	},
 	createdAt: {
 		type: Date,
 		optional: true,
+		// autoValue: function() {
+  //     if (this.isInsert) {
+  //       return new Date();
+  //     } else if (this.isUpsert) {
+  //       return {$setOnInsert: new Date()};
+  //     } else {
+  //       this.unset();  // Prevent user from supplying their own value
+  //     }
+  //   }
 	},
 });
 Recipes.attachSchema(Recipes.schema);

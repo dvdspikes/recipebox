@@ -17,6 +17,7 @@ Template.Recipe_form.onCreated(function recipeFormOnCreated() {
 			onSuccess: { type: Function },
 			cancel: { type: Function },
 		}).validate(Template.currentData());
+		console.log('doc: %j', Template.currentData().doc());
 	});
 });
 
@@ -43,14 +44,20 @@ Template.Recipe_form.onRendered(function recipeFormOnRendered() {
 				return recipe;
 			},
 			onSubmit: function(insertDoc, updateDoc, currentDoc) {
-				let res = self.data.onSubmit(insertDoc, updateDoc, currentDoc);
-				this.done(null, res);
+				try {
+					let res = self.data.onSubmit(insertDoc, updateDoc, currentDoc);
+					this.done(null, res);
+				} catch(err) {
+					this.done(err);
+				}
 				return false;
 			},
 			onSuccess: function(formType, result) {
 				self.data.onSuccess(formType, result);
 			},
-			onError: function(formType, error) {},
+			onError: function(formType, error) {
+				console.error('Error submitting form: %j', error);
+			},
 		},
 		true);
 });

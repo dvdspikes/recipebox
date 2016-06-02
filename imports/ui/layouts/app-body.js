@@ -1,3 +1,5 @@
+import '../components/App_loading.js';
+
 import './app-body.html';
 
 Template.App_body.events({

@@ -2,6 +2,7 @@ import { Template } from 'meteor/templating';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Recipes } from '../../api/recipes/recipes.js'
+import { update, remove } from '../../api/recipes/methods.js';
 
 import './recipe-form.js';
 import './recipe-show.html';
@@ -24,7 +25,7 @@ Template.Recipe_show.events({
 	},
 	'click #delete'(e, t) {
 		if (confirm("Are you sure?")) {
-			Recipes.remove(t.data.recipe()._id);
+			remove.call({recipeId: t.data.recipe()._id});
 			t.data.onDeleted();
 		}
 	},
@@ -37,9 +38,12 @@ Template.Recipe_show.helpers({
 	formArgs() {
 		const instance = Template.instance();
 		return {
-			type: 'update',
+			type: 'normal',
 			doc: instance.data.recipe,
-			onSuccess: () => {
+			onSubmit: function(insertDoc, updateDoc, currentDoc) {
+				return update.call({recipeId: currentDoc._id, recipe: updateDoc});
+			},
+			onSuccess: function(formType, result)  {
 				instance.data.onEditingChange(false);
 			},
 			cancel: () => {

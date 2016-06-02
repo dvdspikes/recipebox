@@ -2,35 +2,47 @@ import { Meteor } from 'meteor/meteor';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { Recipes } from './recipes.js';
 
+Meteor.startup(() => {});
+
+
 export const insert = new ValidatedMethod({
 	name: 'recipes.insert',
 	validate: new SimpleSchema({
 		recipe: {type: Recipes.schema},
 	}).validator(),
 	run({recipe}) {
-		if (!this.userId) {
+		console.log('Meteor.userId: %j', Meteor.userId());
+		if (!Meteor.userId()) {
 			throw new Meteor.Error('not-authorized');
 		}
-		recipe.createdBy = this.userId;
-		recipe.createdat = new Date();
+		if (Meteor.isServer) {
+			Recipes.schema.clean(recipe);
+		}
+		recipe.createdBy = Meteor.userId();
+		recipe.createdAt = new Date();
 		return Recipes.insert(recipe);
 	},
 });
 
 export const update = new ValidatedMethod({
 	name: 'recipes.update',
-	validate: new SimpleSchema({
-		recipe: {type: Recipes.schema},
-	}).validator(),
-	run({recipe}) {
-		if (!this.userId) {
+	validate({recipeId, recipe}) {
+		new SimpleSchema({
+			recipeId: {type: String},
+		}).validate({recipeId});
+		Recipes.schema.validate(recipe, {modifier:true});
+	},
+	run({recipeId, recipe}) {
+		if (!Meteor.userId()) {
 			throw new Meteor.Error('not-authorized');
 		}
-		let old = Recipes.findOne({_id: recipe._id, createdBy: this.userId});
+		let old = Recipes.findOne({_id: recipeId});
 		if (!old) {
-			throw new Meteor.Error('not-authorized');
+			throw new Meteor.Error('illegal-argument');
 		}
-		Recipes.update(recipe);
+		if (Meteor.userId() != old.createdBy)
+			throw new Meteor.Error('not-authorized');
+		Recipes.update(recipeId, recipe);
 	},
 });
 
@@ -42,8 +54,13 @@ export const remove = new ValidatedMethod({
 	run({ recipeId }) {
 		const recipe = Recipes.findOne(recipeId);
 
-		if (!this.userId || this.userId != recipe.createdBy) {
+		if (!recipe)
+			throw new Meteor.error('does-not-exist');
+
+		if (!Meteor.userId() || Meteor.userId() != recipe.createdBy) {
 			throw new Meteor.Error('not-authorized');
 		}
+
+		Recipes.remove(recipeId);
 	},
 });
